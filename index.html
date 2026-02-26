@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mappa pali sala corrente continua CC2</title>
+
+  <style>
+    .map-container {
+      position: relative;
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .map-container img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .marker {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+      border: 2px solid #fff;
+      user-select: none;
+    }
+
+    .azzurro { background: #0099ff; }
+    .verde   { background: #00cc44; }
+    .viola   { background: #9b30ff; }
+    .rosso   { background: #ff3333; }
+
+    .selected {
+      width: 28px !important;
+      height: 28px !important;
+      border: 3px solid yellow !important;
+      z-index: 20;
+    }
+
+    .tooltip {
+      position: absolute;
+      padding: 6px 10px;
+      background: rgba(0,0,0,0.85);
+      color: #fff;
+      font-size: 16px;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      font-weight: 600;
+      border-radius: 4px;
+      white-space: nowrap;
+      transform: translate(-50%, -120%);
+      pointer-events: none;
+      display: none;
+      z-index: 30;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="map-container" id="map">
+    <img src="img/planimetria_CC2.jpg" alt="Mappa pali sala CC2" />
+    <div id="tooltip" class="tooltip"></div>
+  </div>
+
+  <script>
+    const markers = [
+
+      // --- VIOLA 365–394 ---
+      { n: 365, x: 0.0437, y: 0.3112, pdf: "pdf/P_365.pdf" },
+      { n: 366, x: 0.0773, y: 0.3112, pdf: "pdf/P_366.pdf" },
+      { n: 367, x: 0.0603, y: 0.3367, pdf: "pdf/P_367.pdf" },
+      { n: 368, x: 0.0437, y: 0.3627, pdf: "pdf/P_368.pdf" },
+      { n: 369, x: 0.0773, y: 0.3627, pdf: "pdf/P_369.pdf" },
+      { n: 370, x: 0.0397, y: 0.4597, pdf: "pdf/P_370.pdf" },
+      { n: 371, x: 0.0833, y: 0.4597, pdf: "pdf/P_371.pdf" },
+      { n: 372, x: 0.0617, y: 0.4930, pdf: "pdf/P_372.pdf" },
+      { n: 373, x: 0.0397, y: 0.5273, pdf: "pdf/P_373.pdf" },
+      { n: 374, x: 0.0837, y: 0.5273, pdf: "pdf/P_374.pdf" },
+      { n: 375, x: 0.1273, y: 0.4603, pdf: "pdf/P_375.pdf" },
+      { n: 376, x: 0.1713, y: 0.4597, pdf: "pdf/P_376.pdf" },
+      { n: 377, x: 0.1493, y: 0.4930, pdf: "pdf/P_377.pdf" },
+      { n: 378, x: 0.1273, y: 0.5273, pdf: "pdf/P_378.pdf" },
+      { n: 379, x: 0.1713, y: 0.5277, pdf: "pdf/P_379.pdf" },
+      { n: 380, x: 0.2243, y: 0.4878, pdf: "pdf/P_380.pdf" },
+      { n: 381, x: 0.2583, y: 0.4873, pdf: "pdf/P_381.pdf" },
+      { n: 382, x: 0.2417, y: 0.5135, pdf: "pdf/P_382.pdf" },
+      { n: 383, x: 0.2250, y: 0.5395, pdf: "pdf/P_383.pdf" },
+      { n: 384, x: 0.2583, y: 0.5395, pdf: "pdf/P_384.pdf" },
+      { n: 385, x: 0.2247, y: 0.6867, pdf: "pdf/P_385.pdf" },
+      { n: 386, x: 0.2583, y: 0.6872, pdf: "pdf/P_386.pdf" },
+      { n: 387, x: 0.2417, y: 0.7126, pdf: "pdf/P_387.pdf" },
+      { n: 388, x: 0.2247, y: 0.7387, pdf: "pdf/P_388.pdf" },
+      { n: 389, x: 0.2583, y: 0.7387, pdf: "pdf/P_389.pdf" },
+      { n: 390, x: 0.2207, y: 0.8565, pdf: "pdf/P_390.pdf" },
+      { n: 391, x: 0.2650, y: 0.8560, pdf: "pdf/P_391.pdf" },
+      { n: 392, x: 0.2430, y: 0.8897, pdf: "pdf/P_392.pdf" },
+      { n: 393, x: 0.2207, y: 0.9237, pdf: "pdf/P_393.pdf" },
+      { n: 394, x: 0.2650, y: 0.9237, pdf: "pdf/P_394.pdf" },
+
+      // --- ROSSI 395–434 ---
+      { n: 395, x: 0.3560, y: 0.8560, pdf: "pdf/P_395.pdf" },
+      { n: 396, x: 0.3997, y: 0.8560, pdf: "pdf/P_396.pdf" },
+      { n: 397, x: 0.3777, y: 0.8897, pdf: "pdf/P_397.pdf" },
+      { n: 398, x: 0.3560, y: 0.9242, pdf: "pdf/P_398.pdf" },
+      { n: 399, x: 0.4000, y: 0.9237, pdf: "pdf/P_399.pdf" },
+      { n: 400, x: 0.4933, y: 0.8565, pdf: "pdf/P_400.pdf" },
+      { n: 401, x: 0.5370, y: 0.8565, pdf: "pdf/P_401.pdf" },
+      { n: 402, x: 0.5150, y: 0.8897, pdf: "pdf/P_402.pdf" },
+      { n: 403, x: 0.4930, y: 0.9242, pdf: "pdf/P_403.pdf" },
+      { n: 404, x: 0.5373, y: 0.9237, pdf: "pdf/P_404.pdf" },
+      { n: 405, x: 0.6307, y: 0.8565, pdf: "pdf/P_405.pdf" },
+      { n: 406, x: 0.6747, y: 0.8560, pdf: "pdf/P_406.pdf" },
+      { n: 407, x: 0.6523, y: 0.8897, pdf: "pdf/P_407.pdf" },
+      { n: 408, x: 0.6307, y: 0.9237, pdf: "pdf/P_408.pdf" },
+      { n: 409, x: 0.6747, y: 0.9242, pdf: "pdf/P_409.pdf" },
+      { n: 410, x: 0.7677, y: 0.8565, pdf: "pdf/P_410.pdf" },
+      { n: 411, x: 0.8117, y: 0.8560, pdf: "pdf/P_411.pdf" },
+      { n: 412, x: 0.7900, y: 0.8897, pdf: "pdf/P_412.pdf" },
+      { n: 413, x: 0.7680, y: 0.9237, pdf: "pdf/P_413.pdf" },
+      { n: 414, x: 0.8120, y: 0.9237, pdf: "pdf/P_414.pdf" },
+      { n: 415, x: 0.9027, y: 0.8560, pdf: "pdf/P_415.pdf" },
+      { n: 416, x: 0.9467, y: 0.8560, pdf: "pdf/P_416.pdf" },
+      { n: 417, x: 0.9247, y: 0.8897, pdf: "pdf/P_417.pdf" },
+      { n: 418, x: 0.9027, y: 0.9237, pdf: "pdf/P_418.pdf" },
+      { n: 419, x: 0.9467, y: 0.9237, pdf: "pdf/P_419.pdf" },
+      { n: 420, x: 0.9090, y: 0.6872, pdf: "pdf/P_420.pdf" },
+      { n: 421, x: 0.9430, y: 0.6872, pdf: "pdf/P_421.pdf" },
+      { n: 422, x: 0.9260, y: 0.7126, pdf: "pdf/P_422.pdf" },
+      { n: 423, x: 0.9090, y: 0.7383, pdf: "pdf/P_423.pdf" },
+      { n: 424, x: 0.9440, y: 0.7383, pdf: "pdf/P_424.pdf" },
+      { n: 425, x: 0.9090, y: 0.5097, pdf: "pdf/P_425.pdf" },
+      { n: 426, x: 0.9430, y: 0.5102, pdf: "pdf/P_426.pdf" },
+      { n: 427, x: 0.9260, y: 0.5354, pdf: "pdf/P_427.pdf" },
+      { n: 428, x: 0.9090, y: 0.5610, pdf: "pdf/P_428.pdf" },
+      { n: 429, x: 0.9430, y: 0.5610, pdf: "pdf/P_429.pdf" },
+      { n: 430, x: 0.9090, y: 0.3320, pdf: "pdf/P_430.pdf" },
+      { n: 431, x: 0.9430, y: 0.3320, pdf: "pdf/P_431.pdf" },
+      { n: 432, x: 0.9257, y: 0.3580, pdf: "pdf/P_432.pdf" },
+      { n: 433, x: 0.9090, y: 0.3835, pdf: "pdf/P_433.pdf" },
+      { n: 434, x: 0.9430, y: 0.3835, pdf: "pdf/P_434.pdf" }
+    ];
+
+    const map = document.getElementById("map");
+    const tooltip = document.getElementById("tooltip");
+
+    let selectedMarker = null;
+
+    markers.forEach(m => {
+      const el = document.createElement("div");
+
+      // LOGICA COLORE CC2
+      let colorClass = "";
+
+if (m.n >= 365 && m.n <= 394) {
+  colorClass = "viola";
+} else if (m.n >= 395 && m.n <= 434) {
+  colorClass = "rosso";
+}
+
+      el.className = "marker " + colorClass;
+
+      el.style.left = (m.x * 100) + "%";
+      el.style.top = (m.y * 100) + "%";
+
+      el.addEventListener("mouseenter", () => {
+        tooltip.textContent = "Palo " + m.n;
+        tooltip.style.left = (m.x * 100) + "%";
+        tooltip.style.top = (m.y * 100) + "%";
+        tooltip.style.display = "block";
+      });
+
+      el.addEventListener("mouseleave", () => {
+        tooltip.style.display = "none";
+      });
+
+      el.addEventListener("click", () => {
+        if (selectedMarker) selectedMarker.classList.remove("selected");
+        el.classList.add("selected");
+        selectedMarker = el;
+        window.open(m.pdf, "_blank");
+      });
+
+      map.appendChild(el);
+    });
+  </script>
+</body>
+</html>
