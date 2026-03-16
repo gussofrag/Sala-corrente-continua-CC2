@@ -189,6 +189,15 @@
 
   let selectedMarker = null;
 
+  // 🔵 Tooltip persistente come CC1
+  tooltip.addEventListener("mouseenter", () => {
+    tooltip.style.display = "block";
+  });
+
+  tooltip.addEventListener("mouseleave", () => {
+    tooltip.style.display = "none";
+  });
+
   markers.forEach(m => {
     const el = document.createElement("div");
 
@@ -205,7 +214,7 @@
     el.style.left = (m.x * 100) + "%";
     el.style.top = (m.y * 100) + "%";
 
-    // 🔵 TOOLTIP DOPPIO
+    // 🔵 TOOLTIP DOPPIO + RITARDO INTELLIGENTE
     el.addEventListener("mouseenter", () => {
       tooltip.innerHTML = `
         <div><strong>Palo ${m.n}</strong></div>
@@ -218,7 +227,11 @@
     });
 
     el.addEventListener("mouseleave", () => {
-      tooltip.style.display = "none";
+      setTimeout(() => {
+        if (!tooltip.matches(':hover')) {
+          tooltip.style.display = "none";
+        }
+      }, 120);
     });
 
     // CLICK = apre PDF principale
