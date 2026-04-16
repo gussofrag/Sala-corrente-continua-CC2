@@ -92,22 +92,21 @@
 
     /* 📘 Icona legenda compatta */
     .legend-button {
-      position: fixed;
-      top: 20px;
-      right: 140px; /* spostata a sinistra della casetta */
-      background: rgba(0,0,0,0.75);
-      padding: 8px;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.4);
-      z-index: 9999;
-      transition: 0.2s;
-    }
+  position: fixed;
+  top: 20px;
+  right: 180px;
+  background: rgba(0,0,0,0.55); /* rettangolo scuro */
+  padding: 6px 14px;
+  border-radius: 4px; /* niente cerchio */
+  border: 2px solid red; /* bordo rosso */
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  font-size: 15px;
+  color: #ffffff;
+  cursor: pointer;
+  z-index: 9999;
+  transition: 0.2s;
+  user-select: text; /* testo selezionabile */
+}
 
     .legend-button:hover {
       background: rgba(0,0,0,0.9);
