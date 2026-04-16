@@ -68,72 +68,102 @@
       text-decoration: underline;
     }
 
-    /* 🏋️ Prova di carico */
+    /* 🏋️ Prova di carico — icona spostata a sinistra */
     .marker.prova-carico::after {
       content: "🏋️";
       position: absolute;
-      top: -22px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 22px;
+      top: 50%;
+      left: -26px;
+      transform: translateY(-50%);
+      font-size: 20px;
       pointer-events: none;
     }
 
-    /* 📡 Prova sonica cross-hole */
+    /* 📡 Prova sonica — icona spostata a sinistra */
     .marker.prova-sonica::after {
       content: "📡";
       position: absolute;
-      top: -22px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 22px;
+      top: 50%;
+      left: -26px;
+      transform: translateY(-50%);
+      font-size: 20px;
       pointer-events: none;
     }
 
-    /* 📌 Pannello laterale esplicativo */
-    .side-panel {
+    /* 📘 Icona legenda compatta */
+    .legend-button {
       position: fixed;
-      top: 80px;
+      top: 20px;
+      right: 140px; /* spostata a sinistra della casetta */
+      background: rgba(0,0,0,0.75);
+      padding: 8px;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+      z-index: 9999;
+      transition: 0.2s;
+    }
+
+    .legend-button:hover {
+      background: rgba(0,0,0,0.9);
+    }
+
+    /* Mini pannello legenda */
+    .legend-panel {
+      position: fixed;
+      top: 75px;
       right: 20px;
-      width: 260px;
-      background: rgba(0,0,0,0.80);
+      width: 220px;
+      background: rgba(0,0,0,0.85);
       color: #fff;
-      padding: 18px;
+      padding: 14px;
       border-radius: 10px;
       font-family: "Segoe UI", Tahoma, sans-serif;
-      font-size: 15px;
+      font-size: 14px;
       line-height: 1.4;
       z-index: 9998;
       box-shadow: 0 4px 12px rgba(0,0,0,0.4);
       backdrop-filter: blur(4px);
+      display: none;
     }
 
-    .side-panel h3 {
-      margin-top: 0;
-      margin-bottom: 10px;
-      font-size: 17px;
-      font-weight: 600;
-      color: #ffd966;
-    }
-
-    .side-panel .item {
-      margin-bottom: 10px;
+    .legend-panel .item {
       display: flex;
       align-items: center;
+      margin-bottom: 8px;
     }
 
-    .side-panel .item span.icon {
-      font-size: 22px;
-      margin-right: 10px;
-    }
-
-    .side-panel .item span.label {
-      font-size: 15px;
+    .legend-panel .item span.icon {
+      font-size: 18px;
+      margin-right: 8px;
     }
   </style>
 </head>
 
 <body>
+
+<!-- 🔵 ICONA LEGENDA COMPATTA -->
+<div class="legend-button" onclick="toggleLegend()" title="Legenda prove">
+  📘
+</div>
+
+<!-- 🔵 MINI PANNELLO LEGENDA -->
+<div id="legendPanel" class="legend-panel">
+  <div class="item">
+    <span class="icon">🏋️</span>
+    <span>Prova di carico 1,5×PSE<br><small>Pali: 387, 427</small></span>
+  </div>
+
+  <div class="item">
+    <span class="icon">📡</span>
+    <span>Prova sonica “cross-hole”<br><small>Pali: 375, 417</small></span>
+  </div>
+</div>
 
 <!-- 🔵 PULSANTE CASETTA -->
 <a href="https://gussofrag.github.io/Key-Plant/"
@@ -164,179 +194,169 @@
 
 </a>
 
-<!-- 📌 PANNELLO LATERALE ESPLICATIVO -->
-<div class="side-panel">
-  <h3>Legenda prove</h3>
-
-  <div class="item">
-    <span class="icon">🏋️</span>
-    <span class="label">Prova di carico 1,5×PSE<br><small>Pali: 387, 427</small></span>
-  </div>
-
-  <div class="item">
-    <span class="icon">📡</span>
-    <span class="label">Prova sonica “cross-hole”<br><small>Pali: 375, 417</small></span>
-  </div>
-</div>
-
 <div class="map-container" id="map">
   <img src="jpg/Mappa_pali_sala_CC2.jpg">
   <div id="tooltip" class="tooltip"></div>
 </div>
 
 <script>
-  const markers = [
-    /* --- ROSSI 365–394 --- */
-    { n: 365, x: 0.0437, y: 0.3112 },
-    { n: 366, x: 0.0773, y: 0.3112 },
-    { n: 367, x: 0.0603, y: 0.3367 },
-    { n: 368, x: 0.0437, y: 0.3627 },
-    { n: 369, x: 0.0773, y: 0.3627 },
-    { n: 370, x: 0.0397, y: 0.4597 },
-    { n: 371, x: 0.0833, y: 0.4597 },
-    { n: 372, x: 0.0617, y: 0.4930 },
-    { n: 373, x: 0.0397, y: 0.5273 },
-    { n: 374, x: 0.0837, y: 0.5273 },
+function toggleLegend() {
+  const panel = document.getElementById("legendPanel");
+  panel.style.display = (panel.style.display === "block") ? "none" : "block";
+}
 
-    /* 📡 Prova sonica */
-    { n: 375, x: 0.1273, y: 0.4603, prova: "sonica" },
+const markers = [
+  /* --- ROSSI 365–394 --- */
+  { n: 365, x: 0.0437, y: 0.3112 },
+  { n: 366, x: 0.0773, y: 0.3112 },
+  { n: 367, x: 0.0603, y: 0.3367 },
+  { n: 368, x: 0.0437, y: 0.3627 },
+  { n: 369, x: 0.0773, y: 0.3627 },
+  { n: 370, x: 0.0397, y: 0.4597 },
+  { n: 371, x: 0.0833, y: 0.4597 },
+  { n: 372, x: 0.0617, y: 0.4930 },
+  { n: 373, x: 0.0397, y: 0.5273 },
+  { n: 374, x: 0.0837, y: 0.5273 },
 
-    { n: 376, x: 0.1713, y: 0.4597 },
-    { n: 377, x: 0.1493, y: 0.4930 },
-    { n: 378, x: 0.1273, y: 0.5273 },
-    { n: 379, x: 0.1713, y: 0.5277 },
-    { n: 380, x: 0.2243, y: 0.4878 },
-    { n: 381, x: 0.2583, y: 0.4873 },
-    { n: 382, x: 0.2417, y: 0.5135 },
-    { n: 383, x: 0.2250, y: 0.5395 },
-    { n: 384, x: 0.2583, y: 0.5395 },
-    { n: 385, x: 0.2247, y: 0.6867 },
-    { n: 386, x: 0.2583, y: 0.6872 },
+  /* 📡 Prova sonica */
+  { n: 375, x: 0.1273, y: 0.4603, prova: "sonica" },
 
-    /* 🏋️ Prova di carico */
-    { n: 387, x: 0.2417, y: 0.7126, prova: "carico" },
+  { n: 376, x: 0.1713, y: 0.4597 },
+  { n: 377, x: 0.1493, y: 0.4930 },
+  { n: 378, x: 0.1273, y: 0.5273 },
+  { n: 379, x: 0.1713, y: 0.5277 },
+  { n: 380, x: 0.2243, y: 0.4878 },
+  { n: 381, x: 0.2583, y: 0.4873 },
+  { n: 382, x: 0.2417, y: 0.5135 },
+  { n: 383, x: 0.2250, y: 0.5395 },
+  { n: 384, x: 0.2583, y: 0.5395 },
+  { n: 385, x: 0.2247, y: 0.6867 },
+  { n: 386, x: 0.2583, y: 0.6872 },
 
-    { n: 388, x: 0.2247, y: 0.7387 },
-    { n: 389, x: 0.2583, y: 0.7387 },
-    { n: 390, x: 0.2207, y: 0.8565 },
-    { n: 391, x: 0.2650, y: 0.8560 },
-    { n: 392, x: 0.2430, y: 0.8897 },
-    { n: 393, x: 0.2207, y: 0.9237 },
-    { n: 394, x: 0.2650, y: 0.9237 },
+  /* 🏋️ Prova di carico */
+  { n: 387, x: 0.2417, y: 0.7126, prova: "carico" },
 
-    /* --- VIOLA 395–434 --- */
-    { n: 395, x: 0.3560, y: 0.8560 },
-    { n: 396, x: 0.3997, y: 0.8560 },
-    { n: 397, x: 0.3777, y: 0.8897 },
-    { n: 398, x: 0.3560, y: 0.9242 },
-    { n: 399, x: 0.4000, y: 0.9237 },
-    { n: 400, x: 0.4933, y: 0.8565 },
-    { n: 401, x: 0.5370, y: 0.8565 },
-    { n: 402, x: 0.5150, y: 0.8897 },
-    { n: 403, x: 0.4930, y: 0.9242 },
-    { n: 404, x: 0.5373, y: 0.9237 },
-    { n: 405, x: 0.6307, y: 0.8565 },
-    { n: 406, x: 0.6747, y: 0.8560 },
-    { n: 407, x: 0.6523, y: 0.8897 },
-    { n: 408, x: 0.6307, y: 0.9237 },
-    { n: 409, x: 0.6747, y: 0.9242 },
-    { n: 410, x: 0.7677, y: 0.8565 },
-    { n: 411, x: 0.8117, y: 0.8560 },
-    { n: 412, x: 0.7900, y: 0.8897 },
-    { n: 413, x: 0.7680, y: 0.9237 },
-    { n: 414, x: 0.8120, y: 0.9237 },
-    { n: 415, x: 0.9027, y: 0.8560 },
-    { n: 416, x: 0.9467, y: 0.8560 },
+  { n: 388, x: 0.2247, y: 0.7387 },
+  { n: 389, x: 0.2583, y: 0.7387 },
+  { n: 390, x: 0.2207, y: 0.8565 },
+  { n: 391, x: 0.2650, y: 0.8560 },
+  { n: 392, x: 0.2430, y: 0.8897 },
+  { n: 393, x: 0.2207, y: 0.9237 },
+  { n: 394, x: 0.2650, y: 0.9237 },
 
-    /* 📡 Prova sonica */
-    { n: 417, x: 0.9247, y: 0.8897, prova: "sonica" },
+  /* --- VIOLA 395–434 --- */
+  { n: 395, x: 0.3560, y: 0.8560 },
+  { n: 396, x: 0.3997, y: 0.8560 },
+  { n: 397, x: 0.3777, y: 0.8897 },
+  { n: 398, x: 0.3560, y: 0.9242 },
+  { n: 399, x: 0.4000, y: 0.9237 },
+  { n: 400, x: 0.4933, y: 0.8565 },
+  { n: 401, x: 0.5370, y: 0.8565 },
+  { n: 402, x: 0.5150, y: 0.8897 },
+  { n: 403, x: 0.4930, y: 0.9242 },
+  { n: 404, x: 0.5373, y: 0.9237 },
+  { n: 405, x: 0.6307, y: 0.8565 },
+  { n: 406, x: 0.6747, y: 0.8560 },
+  { n: 407, x: 0.6523, y: 0.8897 },
+  { n: 408, x: 0.6307, y: 0.9237 },
+  { n: 409, x: 0.6747, y: 0.9242 },
+  { n: 410, x: 0.7677, y: 0.8565 },
+  { n: 411, x: 0.8117, y: 0.8560 },
+  { n: 412, x: 0.7900, y: 0.8897 },
+  { n: 413, x: 0.7680, y: 0.9237 },
+  { n: 414, x: 0.8120, y: 0.9237 },
+  { n: 415, x: 0.9027, y: 0.8560 },
+  { n: 416, x: 0.9467, y: 0.8560 },
 
-    { n: 418, x: 0.9027, y: 0.9237 },
-    { n: 419, x: 0.9467, y: 0.9237 },
-    { n: 420, x: 0.9090, y: 0.6872 },
-    { n: 421, x: 0.9430, y: 0.6872 },
-    { n: 422, x: 0.9260, y: 0.7126 },
-    { n: 423, x: 0.9090, y: 0.7383 },
-    { n: 424, x: 0.9440, y: 0.7383 },
-    { n: 425, x: 0.9090, y: 0.5097 },
-    { n: 426, x: 0.9430, y: 0.5102 },
+  /* 📡 Prova sonica */
+  { n: 417, x: 0.9247, y: 0.8897, prova: "sonica" },
 
-    /* 🏋️ Prova di carico */
-    { n: 427, x: 0.9260, y: 0.5354, prova: "carico" },
+  { n: 418, x: 0.9027, y: 0.9237 },
+  { n: 419, x: 0.9467, y: 0.9237 },
+  { n: 420, x: 0.9090, y: 0.6872 },
+  { n: 421, x: 0.9430, y: 0.6872 },
+  { n: 422, x: 0.9260, y: 0.7126 },
+  { n: 423, x: 0.9090, y: 0.7383 },
+  { n: 424, x: 0.9440, y: 0.7383 },
+  { n: 425, x: 0.9090, y: 0.5097 },
+  { n: 426, x: 0.9430, y: 0.5102 },
 
-    { n: 428, x: 0.9090, y: 0.5610 },
-    { n: 429, x: 0.9430, y: 0.5610 },
-    { n: 430, x: 0.9090, y: 0.3320 },
-    { n: 431, x: 0.9430, y: 0.3320 },
-    { n: 432, x: 0.9257, y: 0.3580 },
-    { n: 433, x: 0.9090, y: 0.3835 },
-    { n: 434, x: 0.9430, y: 0.3835 }
-  ];
+  /* 🏋️ Prova di carico */
+  { n: 427, x: 0.9260, y: 0.5354, prova: "carico" },
 
-  const map = document.getElementById("map");
-  const tooltip = document.getElementById("tooltip");
+  { n: 428, x: 0.9090, y: 0.5610 },
+  { n: 429, x: 0.9430, y: 0.5610 },
+  { n: 430, x: 0.9090, y: 0.3320 },
+  { n: 431, x: 0.9430, y: 0.3320 },
+  { n: 432, x: 0.9257, y: 0.3580 },
+  { n: 433, x: 0.9090, y: 0.3835 },
+  { n: 434, x: 0.9430, y: 0.3835 }
+];
 
-  let selectedMarker = null;
+const map = document.getElementById("map");
+const tooltip = document.getElementById("tooltip");
 
-  // 🔵 Tooltip persistente come CC1
-  tooltip.addEventListener("mouseenter", () => {
+let selectedMarker = null;
+
+// Tooltip persistente
+tooltip.addEventListener("mouseenter", () => {
+  tooltip.style.display = "block";
+});
+
+tooltip.addEventListener("mouseleave", () => {
+  tooltip.style.display = "none";
+});
+
+markers.forEach(m => {
+  const el = document.createElement("div");
+
+  // LOGICA COLORE CC2
+  let colorClass = "";
+  if (m.n >= 365 && m.n <= 394) {
+    colorClass = "rosso";
+  } else if (m.n >= 395 && m.n <= 434) {
+    colorClass = "viola";
+  }
+
+  el.className = "marker " + colorClass;
+
+  // Aggiunta icone prove
+  if (m.prova === "carico") el.classList.add("prova-carico");
+  if (m.prova === "sonica") el.classList.add("prova-sonica");
+
+  el.style.left = (m.x * 100) + "%";
+  el.style.top = (m.y * 100) + "%";
+
+  // Tooltip
+  el.addEventListener("mouseenter", () => {
+    tooltip.innerHTML = `
+      <div><strong>Palo ${m.n}</strong></div>
+      <a href="pdf/P_${m.n}.pdf" target="_blank">📄 Elaborato Progettuale</a>
+      <a href="Qualità/P_${m.n}_QLT.pdf" target="_blank">🟠 Documento Qualità (QLT)</a>
+    `;
+    tooltip.style.left = (m.x * 100) + "%";
+    tooltip.style.top = (m.y * 100) + "%";
     tooltip.style.display = "block";
   });
 
-  tooltip.addEventListener("mouseleave", () => {
-    tooltip.style.display = "none";
+  el.addEventListener("mouseleave", () => {
+    setTimeout(() => {
+      if (!tooltip.matches(':hover')) {
+        tooltip.style.display = "none";
+      }
+    }, 120);
   });
 
-  markers.forEach(m => {
-    const el = document.createElement("div");
-
-    // LOGICA COLORE CC2
-    let colorClass = "";
-    if (m.n >= 365 && m.n <= 394) {
-      colorClass = "rosso";
-    } else if (m.n >= 395 && m.n <= 434) {
-      colorClass = "viola";
-    }
-
-    el.className = "marker " + colorClass;
-
-    // 🔧 Aggiunta icone prove
-    if (m.prova === "carico") el.classList.add("prova-carico");
-    if (m.prova === "sonica") el.classList.add("prova-sonica");
-
-    el.style.left = (m.x * 100) + "%";
-    el.style.top = (m.y * 100) + "%";
-
-    // 🔵 TOOLTIP DOPPIO + RITARDO INTELLIGENTE
-    el.addEventListener("mouseenter", () => {
-      tooltip.innerHTML = `
-        <div><strong>Palo ${m.n}</strong></div>
-        <a href="pdf/P_${m.n}.pdf" target="_blank">📄 Elaborato Progettuale</a>
-        <a href="Qualità/P_${m.n}_QLT.pdf" target="_blank">🟠 Documento Qualità (QLT)</a>
-      `;
-      tooltip.style.left = (m.x * 100) + "%";
-      tooltip.style.top = (m.y * 100) + "%";
-      tooltip.style.display = "block";
-    });
-
-    el.addEventListener("mouseleave", () => {
-      setTimeout(() => {
-        if (!tooltip.matches(':hover')) {
-          tooltip.style.display = "none";
-        }
-      }, 120);
-    });
-
-    // CLICK = apre PDF principale
-    el.addEventListener("click", () => {
-      if (selectedMarker) selectedMarker.classList.remove("selected");
-      el.classList.add("selected");
-      selectedMarker = el;
-      window.open(`pdf/P_${m.n}.pdf`, "_blank");
-    });
-
-    map.appendChild(el);
+  // CLICK = apre PDF principale
+  el.addEventListener("click", () => {
+    if (selectedMarker) selectedMarker.classList.remove("selected");
+    el.classList.add("selected");
+    selectedMarker = el;
+    window.open(`pdf/P_${m.n}.pdf`, "_blank");
   });
+
+  map.appendChild(el);
+});
 </script>
 
 </body>
