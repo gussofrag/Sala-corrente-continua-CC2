@@ -73,11 +73,15 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 26px;
+  font-size: 40px;          /* molto più grande */
   color: red;
+  font-weight: 900;         /* più spessa */
   pointer-events: none;
-  font-weight: bold;
-  text-shadow: 0 0 4px black;
+  text-shadow: 
+      0 0 4px black,
+      0 0 6px black,
+      0 0 8px black;        /* contorno per visibilità */
+  z-index: 9999;
 }  
     
     .marker.prova-carico::after {
