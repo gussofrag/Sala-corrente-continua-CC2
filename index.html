@@ -67,8 +67,8 @@
       text-decoration: underline;
     }
 
-    /* ❌ CROCE CENTRATA E VISIBILE */
-    .marker.scapitozzato::after {
+    /* ❌ CROCE SOLO QUANDO IL FILTRO È ATTIVO */
+    .marker.scapitozzato-attivo::after {
       content: "❌";
       position: absolute;
       top: 50%;
@@ -222,9 +222,15 @@ function toggleScapitozzati() {
     const isScapitozzato = marker.dataset.scapitozzato === "true";
 
     if (filterScapitozzati) {
-      marker.style.display = isScapitozzato ? "block" : "none";
+      if (isScapitozzato) {
+        marker.style.display = "block";
+        marker.classList.add("scapitozzato-attivo");
+      } else {
+        marker.style.display = "none";
+      }
     } else {
       marker.style.display = "block";
+      marker.classList.remove("scapitozzato-attivo");
     }
   });
 }
@@ -329,6 +335,8 @@ tooltip.addEventListener("mouseleave", () => {
 });
 
 markers.forEach(m => {
+  const el = document.createElement("div");
+
   el.dataset.scapitozzato = m.scapitozzato ? "true" : "false";
 
   let colorClass = "";
@@ -342,7 +350,6 @@ markers.forEach(m => {
 
   if (m.prova === "carico") el.classList.add("prova-carico");
   if (m.prova === "sonica") el.classList.add("prova-sonica");
-  if (m.scapitozzato) el.classList.add("scapitozzato");
 
   el.style.left = (m.x * 100) + "%";
   el.style.top = (m.y * 100) + "%";
