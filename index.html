@@ -66,24 +66,22 @@
     .tooltip a:hover {
       text-decoration: underline;
     }
-    
-.marker.scapitozzato::after {
-  content: "❌";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 40px;          /* molto più grande */
-  color: red;
-  font-weight: 900;         /* più spessa */
-  pointer-events: none;
-  text-shadow: 
-      0 0 4px black,
-      0 0 6px black,
-      0 0 8px black;        /* contorno per visibilità */
-  z-index: 9999;
-}  
-    
+
+    /* ❌ CROCE CENTRATA E VISIBILE */
+    .marker.scapitozzato::after {
+      content: "❌";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 40px;
+      color: red;
+      font-weight: 900;
+      pointer-events: none;
+      text-shadow: 0 0 4px black, 0 0 6px black, 0 0 8px black;
+      z-index: 9999;
+    }
+
     .marker.prova-carico::after {
       content: "🏋️";
       position: absolute;
@@ -158,17 +156,14 @@
 
 <body>
 
-<!-- 🔵 PULSANTE LEGENDA -->
 <div class="legend-button" onclick="toggleLegend()" title="Apri legenda">
   Legenda prove sui pali
 </div>
 
-<!-- 🔵 NUOVO PULSANTE SCAPITOZZATI -->
 <div class="legend-button" onclick="toggleScapitozzati()" style="top: 60px; right: 180px;">
   ⛏️ Pali scapitozzati
 </div>
 
-<!-- 🔵 MINI PANNELLO LEGENDA -->
 <div id="legendPanel" class="legend-panel">
   <div class="item">
     <span class="icon">🏋️</span>
@@ -181,7 +176,6 @@
   </div>
 </div>
 
-<!-- 🔵 PULSANTE CASETTA -->
 <a href="https://gussofrag.github.io/Key-Plant/"
    style="
      position: fixed;
@@ -312,6 +306,8 @@ const markers = [
 
   { n: 428, x: 0.9090, y: 0.5610 },
   { n: 429, x: 0.9430, y: 0.5610 },
+
+  /* SCAPITOZZATI */
   { n: 430, x: 0.9090, y: 0.3320, scapitozzato: true },
   { n: 431, x: 0.9430, y: 0.3320, scapitozzato: true },
   { n: 432, x: 0.9257, y: 0.3580, scapitozzato: true },
@@ -336,7 +332,6 @@ markers.forEach(m => {
   const el = document.createElement("div");
 
   el.dataset.scapitozzato = m.scapitozzato ? "true" : "false";
-  if (m.scapitozzato) el.classList.add("scapitozzato");
 
   let colorClass = "";
   if (m.n >= 365 && m.n <= 394) {
@@ -349,6 +344,8 @@ markers.forEach(m => {
 
   if (m.prova === "carico") el.classList.add("prova-carico");
   if (m.prova === "sonica") el.classList.add("prova-sonica");
+
+  if (m.scapitozzato) el.classList.add("scapitozzato");
 
   el.style.left = (m.x * 100) + "%";
   el.style.top = (m.y * 100) + "%";
