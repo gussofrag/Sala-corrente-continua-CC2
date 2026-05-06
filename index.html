@@ -66,7 +66,16 @@
     .tooltip a:hover {
       text-decoration: underline;
     }
-
+.marker.scapitozzato::after {
+  content: "❌";
+  position: absolute;
+  top: -18px;
+  left: -6px;
+  font-size: 20px;
+  color: red;
+  pointer-events: none;
+  font-weight: bold;
+}  
     .marker.prova-carico::after {
       content: "🏋️";
       position: absolute;
@@ -219,12 +228,12 @@ function toggleScapitozzati() {
 }
 
 const markers = [
-  { n: 365, x: 0.0437, y: 0.3112, scapitozzato: true },
+  { n: 365, x: 0.0437, y: 0.3112 },
   { n: 366, x: 0.0773, y: 0.3112 },
   { n: 367, x: 0.0603, y: 0.3367 },
   { n: 368, x: 0.0437, y: 0.3627 },
   { n: 369, x: 0.0773, y: 0.3627 },
-  { n: 370, x: 0.0397, y: 0.4597, scapitozzato: true },
+  { n: 370, x: 0.0397, y: 0.4597 },
   { n: 371, x: 0.0833, y: 0.4597 },
   { n: 372, x: 0.0617, y: 0.4930 },
   { n: 373, x: 0.0397, y: 0.5273 },
@@ -244,7 +253,7 @@ const markers = [
   { n: 385, x: 0.2247, y: 0.6867 },
   { n: 386, x: 0.2583, y: 0.6872 },
 
-  { n: 387, x: 0.2417, y: 0.7126, prova: "carico", scapitozzato: true },
+  { n: 387, x: 0.2417, y: 0.7126, prova: "carico" },
 
   { n: 388, x: 0.2247, y: 0.7387 },
   { n: 389, x: 0.2583, y: 0.7387 },
@@ -260,7 +269,7 @@ const markers = [
   { n: 398, x: 0.3560, y: 0.9242 },
   { n: 399, x: 0.4000, y: 0.9237 },
 
-  { n: 400, x: 0.4933, y: 0.8565, scapitozzato: true },
+  { n: 400, x: 0.4933, y: 0.8565 },
 
   { n: 401, x: 0.5370, y: 0.8565 },
   { n: 402, x: 0.5150, y: 0.8897 },
@@ -279,7 +288,7 @@ const markers = [
   { n: 415, x: 0.9027, y: 0.8560 },
   { n: 416, x: 0.9467, y: 0.8560 },
 
-  { n: 417, x: 0.9247, y: 0.8897, prova: "sonica", scapitozzato: true },
+  { n: 417, x: 0.9247, y: 0.8897, prova: "sonica" },
 
   { n: 418, x: 0.9027, y: 0.9237 },
   { n: 419, x: 0.9467, y: 0.9237 },
@@ -295,11 +304,11 @@ const markers = [
 
   { n: 428, x: 0.9090, y: 0.5610 },
   { n: 429, x: 0.9430, y: 0.5610 },
-  { n: 430, x: 0.9090, y: 0.3320 },
-  { n: 431, x: 0.9430, y: 0.3320 },
-  { n: 432, x: 0.9257, y: 0.3580 },
-  { n: 433, x: 0.9090, y: 0.3835 },
-  { n: 434, x: 0.9430, y: 0.3835 }
+  { n: 430, x: 0.9090, y: 0.3320, scapitozzato: true },
+  { n: 431, x: 0.9430, y: 0.3320, scapitozzato: true },
+  { n: 432, x: 0.9257, y: 0.3580, scapitozzato: true },
+  { n: 433, x: 0.9090, y: 0.3835, scapitozzato: true },
+  { n: 434, x: 0.9430, y: 0.3835, scapitozzato: true }
 ];
 
 const map = document.getElementById("map");
@@ -319,6 +328,7 @@ markers.forEach(m => {
   const el = document.createElement("div");
 
   el.dataset.scapitozzato = m.scapitozzato ? "true" : "false";
+  if (m.scapitozzato) el.classList.add("scapitozzato");
 
   let colorClass = "";
   if (m.n >= 365 && m.n <= 394) {
