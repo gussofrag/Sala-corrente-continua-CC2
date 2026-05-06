@@ -329,8 +329,6 @@ tooltip.addEventListener("mouseleave", () => {
 });
 
 markers.forEach(m => {
-  const el = document.createElement("div");
-
   el.dataset.scapitozzato = m.scapitozzato ? "true" : "false";
 
   let colorClass = "";
@@ -344,7 +342,6 @@ markers.forEach(m => {
 
   if (m.prova === "carico") el.classList.add("prova-carico");
   if (m.prova === "sonica") el.classList.add("prova-sonica");
-
   if (m.scapitozzato) el.classList.add("scapitozzato");
 
   el.style.left = (m.x * 100) + "%";
