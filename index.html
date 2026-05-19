@@ -102,6 +102,7 @@
       pointer-events: none;
     }
 
+    /* 🔥 PULSANTE LEGENDA */
     .legend-button {
       position: fixed;
       top: 20px;
@@ -121,26 +122,27 @@
 
     .legend-button:hover {
       background: rgba(0,0,0,0.9);
-}
+    }
 
+    /* 🔥 LEGENDA ANCORATA AL PULSANTE */
     .legend-panel {
-    position: absolute;   /* 👈 CAMBIA DA fixed A absolute */
-    top: 0;               /* 👈 allineata verticalmente al pulsante */
-    right: 100%;          /* 👈 SI POSIZIONA SUBITO A SINISTRA DEL PULSANTE */
-    margin-right: 10px;   /* 👈 distanza elegante */
-    width: 220px;
-    background: rgba(0,0,0,0.85);
-    color: #fff;
-    padding: 14px;
-    border-radius: 10px;
-    font-family: "Segoe UI", Tahoma, sans-serif;
-    font-size: 14px;
-    line-height: 1.4;
-    z-index: 9998;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-    backdrop-filter: blur(4px);
-    display: none;
-}
+      position: absolute;     /* si ancora al pulsante */
+      top: 0;                 /* allineata verticalmente */
+      right: 100%;            /* subito a sinistra del pulsante */
+      margin-right: 10px;     /* piccolo distacco elegante */
+      width: 220px;
+      background: rgba(0,0,0,0.85);
+      color: #fff;
+      padding: 14px;
+      border-radius: 10px;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      font-size: 14px;
+      line-height: 1.4;
+      z-index: 9998;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      backdrop-filter: blur(4px);
+      display: none;
+    }
 
     .legend-panel .item {
       display: flex;
@@ -157,26 +159,29 @@
 
 <body>
 
+<!-- 🔥 PULSANTE + LEGENDA (LEGEND PANEL DENTRO IL PULSANTE) -->
 <div class="legend-button" onclick="toggleLegend()" title="Apri legenda">
   Legenda prove sui pali
+
+  <div id="legendPanel" class="legend-panel">
+    <div class="item">
+      <span class="icon">🏋️</span>
+      <span>Prova di carico 1,5×PSE<br><small>Pali: 387, 427</small></span>
+    </div>
+
+    <div class="item">
+      <span class="icon">📡</span>
+      <span>Prova sonica “cross-hole”<br><small>Pali: 375, 405, 417</small></span>
+    </div>
+  </div>
 </div>
 
+<!-- 🔨 PULSANTE SCAPITOZZATI -->
 <div class="legend-button" onclick="toggleScapitozzati()" style="top: 60px; right: 180px;">
   ⛏️ Pali scapitozzati
 </div>
 
-<div id="legendPanel" class="legend-panel">
-  <div class="item">
-    <span class="icon">🏋️</span>
-    <span>Prova di carico 1,5×PSE<br><small>Pali: 387, 427</small></span>
-  </div>
-
-  <div class="item">
-    <span class="icon">📡</span>
-    <span>Prova sonica “cross-hole”<br><small>Pali: 375, 405, 417</small></span>
-  </div>
-</div>
-
+<!-- 🔙 PULSANTE HOME -->
 <a href="https://gussofrag.github.io/Key-Plant/"
    style="
      position: fixed;
@@ -235,7 +240,6 @@ function toggleScapitozzati() {
     }
   });
 }
-
 const markers = [
   { n: 365, x: 0.0437, y: 0.3112 },
   { n: 366, x: 0.0773, y: 0.3112 },
